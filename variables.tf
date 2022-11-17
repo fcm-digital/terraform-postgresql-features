@@ -4,7 +4,7 @@ variable "sqlinstance" {
   type        = map(object({
     connection_name = string
     username        = string
-    port            = string
+    port            = number
     password        = string
   }))
   sensitive   = true
