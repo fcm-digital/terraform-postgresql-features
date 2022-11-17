@@ -1,4 +1,16 @@
 
+variable "sqlinstance" {
+  description = "SQL Instance Connection data."
+  type        = object({
+    connection_name      = string
+    username             = string
+    port                 = string
+    password             = string
+  })
+  default     = {}
+  sensitive   = true
+}
+
 variable "instance_databases_list" {
   description = "All SQL Instance Databases."
   type        = list(object({
