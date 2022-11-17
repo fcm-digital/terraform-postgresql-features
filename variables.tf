@@ -1,12 +1,12 @@
 
 variable "sqlinstance" {
   description = "SQL Instance Connection data."
-  type        = map({
+  type        = map(object({
     connection_name = string
     username        = string
     port            = string
     password        = string
-  })
+  }))
   sensitive   = true
 }
 
