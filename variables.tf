@@ -1,15 +1,4 @@
 
-variable "sqlinstance" {
-  description = "SQL Instance Connection data."
-  type        = map(object({
-    connection_name = string
-    username        = string
-    port            = number
-    password        = string
-  }))
-  sensitive   = true
-}
-
 variable "instance_databases_list" {
   description = "All SQL Instance Databases."
   type        = list(object({
