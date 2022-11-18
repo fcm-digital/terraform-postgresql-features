@@ -4,7 +4,7 @@ resource "postgresql_database" "db" {
 
   name              = each.key
   owner             = each.value.owner
-  template          = "template1"
+  template          = "template0" #DEFAULT template
   connection_limit  = -1
   allow_connections = true
 }
