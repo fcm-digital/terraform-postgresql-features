@@ -14,5 +14,5 @@ resource "postgresql_grant_role" "roles" {
   for_each = { for role_granted in local.roles_granted_definition : role_granted.index => role_granted }
 
   role              = each.value.role
-  grant_role        = each.value.role_granted
+  grant_role        = each.value.grant_role
 }
