@@ -10,16 +10,16 @@ locals {
   roles_definition = [
     for db_permissions in var.database_permissions_list: 
     {
-      index      = "${each.value.database}-${each.value.role}"
-      database   = each.value.database
-      role       = each.value.role
-      privileges = lookup(local.default_permissions, each.value.permission, ["SELECT"])
+      index      = "${db_permissions.database}-${db_permissions.role}"
+      database   = db_permissions.database
+      role       = db_permissions.role
+      privileges = lookup(local.default_permissions, db_permissions.permission, ["SELECT"])
     }
   ]
 }
 
 resource "postgresql_grant" "databases" {
-  for_each = { for permissions in local.default_permissions : permissions.index => permissions }
+  for_each = { for role_definition in local.roles_definition : role_definition.index => role_definition }
 
   database    = each.value.database
   role        = each.value.role
