@@ -2,7 +2,7 @@
 locals {
   default_permissions = {
     noone    = []
-    readonly = ["SELECT"]
+    readonly = ["SELECT", "CONNECT"]
     owner    = ["SELECT", "INSERT", "UPDATE", "DELETE", "TRUNCATE",
                 "REFERENCES", "TRIGGER", "CREATE", "CONNECT",
                 "TEMPORARY", "EXECUTE", "USAGE"]
