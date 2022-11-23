@@ -2,7 +2,7 @@
 locals {
   default_permissions = {
     noone    = []
-    readonly = ["SELECT", "CONNECT"]
+    readonly = ["SELECT"]
     owner    = ["SELECT", "INSERT", "UPDATE", "DELETE", "TRUNCATE",
                 "REFERENCES", "TRIGGER", "CREATE", "CONNECT",
                 "TEMPORARY", "EXECUTE", "USAGE"]
@@ -18,11 +18,21 @@ locals {
   ]
 }
 
-resource "postgresql_grant" "databases" {
+# resource "postgresql_grant" "databases" {
+#   for_each = { for role_definition in local.roles_definition : role_definition.index => role_definition }
+
+#   database    = each.value.database
+#   role        = each.value.role
+#   object_type = "database"
+#   privileges  = each.value.privileges
+# }
+
+resource postgresql_grant "tables" {
   for_each = { for role_definition in local.roles_definition : role_definition.index => role_definition }
 
   database    = each.value.database
   role        = each.value.role
-  object_type = "database"
+  # schema      = postgresql_schema.new_schema.name
+  object_type = "table"
   privileges  = each.value.privileges
 }
