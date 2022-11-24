@@ -10,7 +10,7 @@ variable "roles_list" {
     login            = optional(bool)
     password         = optional(string)
     connection_limit = optional(number)
-    roles            = optional(List[string])
+    roles            = optional(List(string))
   }))
   default     = []
   sensitive   = true
