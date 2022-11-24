@@ -14,5 +14,4 @@ variable "roles_list" {
   # }))
   type        = list(any)
   default     = []
-  sensitive   = true
 }
