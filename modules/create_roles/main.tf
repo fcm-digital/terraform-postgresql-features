@@ -1,6 +1,6 @@
 
 resource "random_password" "user-password" {
-  for_each = { for role in var.roles_list : role.name => role if length(lookup(role, "password", "")) == 0}
+  for_each = { for role in var.roles_list : role.name => role }
 
   keepers = {
     name = each.key
@@ -19,7 +19,7 @@ resource "postgresql_role" "role" {
   create_role      = lookup(each.value, "create_role", false)
 
   login            = lookup(each.value, "login", true)
-  password         = lookup(each.value, "password", random_password-user-password[each.key].result)
+  password         = lookup(each.value, "password", random_password.user-password[each.key].result)
   connection_limit = lookup(each.value, "connection_limit", -1)
   roles            = lookup(each.value, "roles", [])
 
