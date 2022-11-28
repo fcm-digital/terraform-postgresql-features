@@ -6,17 +6,17 @@ resource "random_password" "user-password" {
     name = each.key
   }
 
-  length     = 32
-  special    = false
+  length  = var.password_length
+  special = var.password_special
 }
 
 resource "postgresql_role" "role" {
   for_each = { for role in var.roles_list : role.name => role }
 
-  name             = each.key
-  superuser        = lookup(each.value, "superuser", false)
-  create_database  = lookup(each.value, "create_database", false)
-  create_role      = lookup(each.value, "create_role", false)
+  name            = each.key
+  superuser       = lookup(each.value, "superuser", false)
+  create_database = lookup(each.value, "create_database", false)
+  create_role     = lookup(each.value, "create_role", false)
 
   login            = lookup(each.value, "login", true)
   password         = lookup(each.value, "password", random_password.user-password[each.key].result)

@@ -12,6 +12,16 @@ variable "roles_list" {
   #   connection_limit = optional(number)
   #   roles            = optional(list(string))
   # }))
-  type        = list(any)
-  default     = []
+  type    = list(any)
+  default = []
+}
+
+variable "password_length" {
+  type    = number
+  default = 16
+}
+
+variable "password_special" {
+  type    = bool
+  default = false
 }
