@@ -4,7 +4,7 @@ resource "postgresql_database" "db" {
 
   name              = each.key
   owner             = each.value.owner
-  template          = "template1" #DEFAULT GCP template
+  template          = lookup(each.value, "template", "template0") #DEFAULT GCP template0
   connection_limit  = -1
   allow_connections = true
 }
