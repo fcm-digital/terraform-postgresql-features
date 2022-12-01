@@ -4,5 +4,6 @@ output "roles_created"{
 }
 
 output "roles_password" {
-    value = values(random_password.user-password)[*].result
+    value     = values(random_password.user-password)[*].result
+    sensitive = true
 }
