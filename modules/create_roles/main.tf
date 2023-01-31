@@ -1,9 +1,11 @@
-
+locals {
+  roles = { for role in var.roles_list : role.name => role }
+}
 resource "random_password" "user-password" {
-  for_each = { for role in var.roles_list : role.name => role }
+  for_each = local.roles
 
   keepers = {
-    name = each.key
+    name = each.value["name"]
   }
 
   length  = var.password_length
@@ -11,7 +13,7 @@ resource "random_password" "user-password" {
 }
 
 resource "postgresql_role" "role" {
-  for_each = { for role in var.roles_list : role.name => role }
+  for_each = local.roles
 
   name            = each.key
   superuser       = lookup(each.value, "superuser", false)
