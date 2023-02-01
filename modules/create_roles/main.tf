@@ -1,11 +1,12 @@
 locals {
   roles = { for role in var.roles_list : role.name => role }
 }
+
 resource "random_password" "user-password" {
   for_each = local.roles
 
   keepers = {
-    name = each.value["name"]
+    name = each.key
   }
 
   length  = var.password_length
