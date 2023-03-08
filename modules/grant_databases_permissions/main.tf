@@ -1,28 +1,31 @@
 
 locals {
   default_permissions = {
-    noone    = []
-    readonly = ["SELECT"],
-    creator  = ["CREATE", "DELETE", "UPDATE"]
-    owner    = ["SELECT", "INSERT", "UPDATE", "DELETE", "TRUNCATE",
-                "REFERENCES", "TRIGGER", "CREATE", "CONNECT",
-                "TEMPORARY", "EXECUTE", "USAGE"]
+    noone      = []
+    readonly   = ["SELECT"],
+    db_creator = ["CREATE"],
+    owner      = ["SELECT", "INSERT", "UPDATE", "DELETE", "TRUNCATE",
+                  "REFERENCES", "TRIGGER", "CREATE", "CONNECT",
+                  "TEMPORARY", "EXECUTE", "USAGE"]
   }
   roles_definition = [
     for db_permissions in var.database_permissions_list: 
     {
-      index      = "${db_permissions.database}-${db_permissions.role}"
-      database   = db_permissions.database
-      role       = db_permissions.role
-      object_type = lookup(db_permissions, object_type, "table")
-      privileges = lookup(local.default_permissions, db_permissions.permission, ["SELECT"])
+      index       = "${db_permissions.database}-${db_permissions.role}"
+      database    = db_permissions.database
+      role        = db_permissions.role
+      object_type = db_permissions.object_type
+      privileges  = lookup(local.default_permissions, db_permissions.permission, ["SELECT"])
     }
   ]
 }
 
 # postgresql_grant apply privileges only on existing objects, because this is how GRANT works in Postgres.
 resource "postgresql_grant" "tables" {
-  for_each = { for role_definition in local.roles_definition : role_definition.index => role_definition if role_definition.object_type = "table" }
+  for_each = {
+    for role_definition in local.roles_definition : role_definition.index => role_definition
+    if role_definition.object_type == "table"
+  }
 
   database    = each.value.database
   role        = each.value.role
@@ -32,7 +35,10 @@ resource "postgresql_grant" "tables" {
 }
 
 resource "postgresql_grant" "databases" {
-  for_each = { for role_definition in local.roles_definition : role_definition.index => role_definition if role_definition.object_type = "database" }
+  for_each = {
+    for role_definition in local.roles_definition : role_definition.index => role_definition
+    if role_definition.object_type == "database"
+  }
 
   database    = each.value.database
   role        = each.value.role
