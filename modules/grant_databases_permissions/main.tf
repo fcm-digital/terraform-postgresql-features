@@ -14,19 +14,29 @@ locals {
       index      = "${db_permissions.database}-${db_permissions.role}"
       database   = db_permissions.database
       role       = db_permissions.role
+      object_type = lookup(db_permissions, object_type, "table")
       privileges = lookup(local.default_permissions, db_permissions.permission, ["SELECT"])
     }
   ]
 }
 
 # postgresql_grant apply privileges only on existing objects, because this is how GRANT works in Postgres.
-resource postgresql_grant "tables" {
-  for_each = { for role_definition in local.roles_definition : role_definition.index => role_definition }
+resource "postgresql_grant" "tables" {
+  for_each = { for role_definition in local.roles_definition : role_definition.index => role_definition if role_definition.object_type = "table" }
 
   database    = each.value.database
   role        = each.value.role
   schema      = lookup(each.value, "schema", "public") #Default scheme
-  object_type = "table"
+  object_type = each.value.object_type
+  privileges  = each.value.privileges
+}
+
+resource "postgresql_grant" "databases" {
+  for_each = { for role_definition in local.roles_definition : role_definition.index => role_definition if role_definition.object_type = "database" }
+
+  database    = each.value.database
+  role        = each.value.role
+  object_type = each.value.object_type
   privileges  = each.value.privileges
 }
 
