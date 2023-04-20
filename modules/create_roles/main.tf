@@ -17,6 +17,7 @@ resource "postgresql_role" "role" {
   superuser       = lookup(each.value, "superuser", false)
   create_database = lookup(each.value, "create_database", false)
   create_role     = lookup(each.value, "create_role", false)
+  replication     = lookup(each.value, "replication", false)
 
   login            = lookup(each.value, "login", true)
   password         = lookup(each.value, "password", random_password.user-password[each.key].result)
