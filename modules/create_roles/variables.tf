@@ -34,6 +34,6 @@ variable "onepassword" {
   #   title      = string
   #   tags       = optional(list(string))
   # }))
-  type        = object(any)
+  type        = map(any)
   default     = {}
 }
