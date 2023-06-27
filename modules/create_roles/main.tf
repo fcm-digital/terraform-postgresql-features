@@ -26,3 +26,17 @@ resource "postgresql_role" "role" {
 
   depends_on = [random_password.user-password]
 }
+
+resource "onepassword_item" "database_item" {
+  for_each = { for role in var.roles_list : role.name => role if var.onepassword.enabled }
+  vault    = var.onepassword.vault_uuid
+
+  title    = "${var.onepassword.title}-${each.key}"
+  category = "database"
+  type     = "postgresql"
+  
+  username = each.key
+  password = lookup(each.value, "password", random_password.user-password[each.key].result)
+  tags     = sort(lookup(var.onepassword, "tags", ["CloudSQL", "PostgreSQL", "Terraform"]))
+  depends_on = [onepassword_item.database_item]
+}
