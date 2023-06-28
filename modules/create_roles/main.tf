@@ -1,4 +1,8 @@
 
+locals {
+  default_tags = ["CloudSQL", "PostgreSQL", "Terraform"]
+}
+
 resource "random_password" "user-password" {
   for_each = { for role in var.roles_list : role.name => role }
 
@@ -29,6 +33,7 @@ resource "postgresql_role" "role" {
 
 resource "onepassword_item" "database_item" {
   for_each = { for role in var.roles_list : role.name => role if var.onepassword.enabled }
+
   vault    = var.onepassword.vault_uuid
 
   title    = "${var.onepassword.title}-${each.key}"
@@ -37,6 +42,7 @@ resource "onepassword_item" "database_item" {
   
   username = each.key
   password = lookup(each.value, "password", random_password.user-password[each.key].result)
-  tags     = sort(lookup(var.onepassword, "tags", ["CloudSQL", "PostgreSQL", "Terraform"]))
-  depends_on = [onepassword_item.database_item]
+  tags     = sort(lookup(var.onepassword, "tags", local.default_tags))
+
+  depends_on = [postgresql_role.role]
 }
