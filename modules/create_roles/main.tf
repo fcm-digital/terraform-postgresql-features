@@ -32,7 +32,7 @@ resource "postgresql_role" "role" {
 }
 
 resource "onepassword_item" "database_item" {
-  for_each = { for role in var.roles_list : role.name => role if var.onepassword.enabled }
+  for_each = { for role in var.roles_list : role.name => role if var.onepassword != {} }
 
   vault = var.onepassword.vault_uuid
 
