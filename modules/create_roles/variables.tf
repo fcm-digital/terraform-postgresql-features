@@ -29,10 +29,8 @@ variable "password_special" {
 variable "onepassword" {
   description = "A map with the necessary data to upload the role/pwd to 1password."
   # type        = object({
-  #   enabled    = bool
   #   vault_uuid = string
   #   title      = string
   # }))
   type        = map(any)
-  default     = {}
 }
