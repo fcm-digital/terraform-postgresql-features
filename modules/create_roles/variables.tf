@@ -33,4 +33,5 @@ variable "onepassword" {
   #   title      = string
   # }))
   type        = map(any)
+  default     = null
 }
