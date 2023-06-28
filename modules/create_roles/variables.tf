@@ -32,7 +32,6 @@ variable "onepassword" {
   #   enabled    = bool
   #   vault_uuid = string
   #   title      = string
-  #   tags       = optional(list(string))
   # }))
   type        = map(any)
   default     = {}

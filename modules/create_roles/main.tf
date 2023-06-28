@@ -32,17 +32,17 @@ resource "postgresql_role" "role" {
 }
 
 resource "onepassword_item" "database_item" {
-  for_each = { for role in var.roles_list : role.name => role if var.onepassword.enabled == true }
+  for_each = { for role in var.roles_list : role.name => role if var.onepassword.enabled }
 
-  vault    = var.onepassword.vault_uuid
+  vault = var.onepassword.vault_uuid
 
   title    = "${var.onepassword.title}-${each.key}"
   category = "database"
   type     = "postgresql"
-  
+
   username = each.key
   password = lookup(each.value, "password", random_password.user-password[each.key].result)
-  tags     = sort(lookup(var.onepassword, "tags", local.default_tags))
+  tags     = local.default_tags
 
   depends_on = [postgresql_role.role]
 }
