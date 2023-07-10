@@ -10,8 +10,8 @@ resource "random_password" "user-password" {
     name = each.key
   }
 
-  length  = each.password_length != null ? each.password_length : var.password_length
-  special = each.password_special != null ? each.password_special : var.password_special
+  length  = tonumber(lookup(each, "password_length", var.password_length))
+  special = tobool(lookup(each, "password_special", var.password_special))
 }
 
 resource "postgresql_role" "role" {
